@@ -1,42 +1,143 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
+body {
+  background-color: #FAFAFA;
+}
+
+header {
+  /* background-color: #ffffff;  */
+  background-color: lightblue; 
+  min-height: 60px;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 20px 0 0;
+
+
+} 
+
+.where {
+  /* border: blue solid 3px; */
+  padding: 0 20px; 
+}
+
+ nav {
+ /* border: red solid 2px; */
+ display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+ul {
+  display: flex;
+  list-style-type: none;
+  padding: 0;
+  gap: 1rem;
+}
+
+li {
+  /* border: green solid 2px; */
+  color: black;
+
+}
+
+a {
+  text-decoration: none;
+}
+
+h1 {
+  font-size: 1.5rem;
+  font-weight: bold;
+  line-height: 1.1;
+  color: black;
+}
+
+.bold {
+  font-weight: bold;
+}
+
+p {
+  margin: 0;
+}  
+
+button {
+  background-color: grey;
+}
+
+.searchBar {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
   padding: 2rem;
+}
+
+.search-input {
+  width: 80%; 
+  max-width: 500px; 
+  padding: 10px 15px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.search-input:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+.search-input::placeholder {
+  color: #aaa;
+  font-style: italic;
+}
+
+
+.countries-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); 
+ 
+
+
+}
+
+
+.countries-grid .card {
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   text-align: center;
+  padding: 20px;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.country-cards {
+  background-color: white;
+  width: 264px;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
+img {
+  width: 100%;
+
+}
+
+.card-text {
+  margin-left: 1rem;
+  padding: 1rem;
+  color: black;
+}
+
+@media (min-width: 300px) and (max-width: 699px) {
+  .countries-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    background-color: lightblue;
+    gap: 1.25rem; 
+    padding: 1.25rem;
+    margin-right: 0;
   }
-  to {
-    transform: rotate(360deg);
+}
+
+@media (min-width:915px) and (max-width: 3000px) {
+  .countries-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    background-color: lightblue;
   }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
-}
-
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
 }
