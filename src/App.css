@@ -1,41 +1,32 @@
+
 body {
   background-color: #FAFAFA;
 }
 
 header {
-  /* background-color: #ffffff;  */
-  background-color: lightblue; 
-  min-height: 60px;
-  display: flex;
-  justify-content: space-between;
-  padding: 0 20px 0 0;
-
-
-} 
-
-.where {
-  /* border: blue solid 3px; */
-  padding: 0 20px; 
+  background-color: #ffffff;
+  padding: 0 1.25rem; 
 }
 
- nav {
- /* border: red solid 2px; */
- display: flex;
+.header-text {
+  display: flex;
+  justify-content: space-between;
+}
+
+nav {
+  display: flex;
   justify-content: flex-end;
-  align-items: center;
 }
 
 ul {
   display: flex;
   list-style-type: none;
-  padding: 0;
-  gap: 1rem;
+  gap: .7rem;
 }
 
 li {
-  /* border: green solid 2px; */
   color: black;
-
+  
 }
 
 a {
@@ -43,9 +34,8 @@ a {
 }
 
 h1 {
-  font-size: 1.5rem;
+  font-size: 1.5rem; 
   font-weight: bold;
-  line-height: 1.1;
   color: black;
 }
 
@@ -53,9 +43,13 @@ h1 {
   font-weight: bold;
 }
 
+a {
+  color: black;
+}
+
 p {
   margin: 0;
-}  
+}
 
 button {
   background-color: grey;
@@ -69,19 +63,19 @@ button {
 }
 
 .search-input {
-  width: 80%; 
-  max-width: 500px; 
-  padding: 10px 15px;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
+  width: 80%;
+  max-width: 31.25rem; 
+  padding: 0.625rem 0.9375rem; 
+  font-size: 1rem; 
+  border: 0.0625rem solid #ccc; 
+  border-radius: 0.3125rem;
   outline: none;
   transition: all 0.3s ease;
 }
 
 .search-input:focus {
   border-color: #007bff;
-  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+  box-shadow: 0 0 0.3125rem rgba(0, 123, 255, 0.5); 
 }
 
 .search-input::placeholder {
@@ -89,32 +83,25 @@ button {
   font-style: italic;
 }
 
-
-.countries-grid {
+.countries-card {
   display: grid;
-  grid-template-columns: repeat(4, 1fr); 
- 
-
-
-}
-
-
-.countries-grid .card {
-  background-color: #f9f9f9;
-  border-radius: 10px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  text-align: center;
-  padding: 20px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  padding: 1rem;
 }
 
 .country-cards {
-  background-color: white;
-  width: 264px;
+  background-color: #f9f9f9;
+  box-shadow: 0 0.125rem 0.3125rem rgba(0, 0, 0, 0.1);
+  text-align: center;
+  padding: 1.25rem; 
+  width: 16.5rem; 
+
 }
 
 img {
-  width: 100%;
-
+  max-width: 100%;
+  border-radius: 5px;
 }
 
 .card-text {
@@ -123,21 +110,254 @@ img {
   color: black;
 }
 
-@media (min-width: 300px) and (max-width: 699px) {
-  .countries-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    background-color: lightblue;
-    gap: 1.25rem; 
-    padding: 1.25rem;
-    margin-right: 0;
-  }
+.profile-form {
+  max-width: 31.25rem; 
+  margin: 3.125rem; 
+  padding: 1.25rem; 
+  border-radius: 0.625rem; 
 }
 
-@media (min-width:915px) and (max-width: 3000px) {
-  .countries-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    background-color: lightblue;
+.form-title {
+  font-size: 1.5rem; 
+  font-weight: bold;
+  color: #333333;
+  margin-bottom: 1.25rem; 
+}
+
+.form-group {
+  margin-bottom: 1.25rem; 
+  display: flex;
+  flex-direction: column;
+}
+
+.profile-form input,
+.profile-form textarea {
+  width: 95%;
+  padding: 0.5rem 0.6em; 
+  font-size: 1rem; 
+  border: 0.0625rem solid #dddddd; 
+  border-radius: 0.3125rem; 
+  outline: none;
+  background-color: #ffffff;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.profile-form input:focus,
+.profile-form textarea:focus {
+  border-color: #6200ea;
+  box-shadow: 0 0 0.3125rem rgba(98, 0, 234, 0.3); 
+}
+
+.submit-button {
+  width: 20%;
+  padding: 0.5rem 0.8rem; 
+  font-size: 1rem; 
+  color: #ffffff;
+  background-color: #7772ce;
+  border: none;
+  border-radius: 0.3125rem; 
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.submit-button:hover {
+  background-color: #4a00b4;
+}
+
+.error-message {
+  color: red;
+  margin-top: -0.625rem; 
+  margin-bottom: 1.25rem; 
+  font-size: 0.875rem; 
+}
+
+.country-details {
+
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.back-button {
+  display: flex;
+  align-items: center;
+  background-color: transparent;
+  border: none;
+  color: #333;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-bottom: 2rem;
+}
+
+.back-button span {
+  font-size: 1.25rem;
+  margin-right: 0.5rem;
+}
+
+.country-container {
+  display: flex;
+  gap: 2rem;
+}
+
+.details-container {
+  display: flex;
+  gap: 2rem;
+}
+
+.country-flag {
+width: fit-content;
+height: fit-content;
+  border-radius: 5px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.country-info {
+  flex: 1;
+}
+
+.country-info h1 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.country-info p {
+  font-size: 1rem;
+  margin: 0.5rem 0;
+  color: black;
+}
+
+.save-button {
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  background-color: #ffffff;
+  color: black;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.save-button:hover {
+  background-color: gray;
+  color: white;
+}
+
+.border-countries {
+  margin-top: 2rem;
+}
+
+.border-countries h3 {
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+  color: black;
+}
+
+.borders-list {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.border-item {
+  background-color: #ffffff;
+  color: black;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  font-size: 0.875rem;
+}
+
+
+
+@media (min-width: 300px) and (max-width: 699px){
+
+  header {
+    padding: 0;
+  }
+
+.header-text {
+  display: flex;
+  white-space: nowrap; 
+  margin-left: 0;
+}
+
+  .where {
+    margin-top: .40rem;
+   
+  }
+
+  .header-text p {
+    font-size: .75rem; 
+    font-weight: 500;
+  }
+
+  h1 {
+    font-size: .85rem;  
+  }
+
+  ul {
+  padding: 0;
+  }
+
+.profile-form {
+
+    margin: 1.25rem; 
+    padding: 0.625rem; 
+  }
+
+  .form-title {
+   
+    font-size: 1.125rem; 
+    margin-bottom: 0.625rem; 
+  }
+
+  .profile-form input,
+.profile-form textarea {
+  max-width: 90%;
+    padding: 0.5rem 0.625rem; 
+    font-size: 0.8125rem; 
+  }
+
+  .submit-button {
+    padding: 0.5rem 0.625rem; 
+    font-size: 0.8125rem; 
+  }
+
+  .countries-card {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  .details-container {
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .country-flag {
+    width: 90%;
+  }
+
+  .country-info h1 {
+    font-size: 1.5rem; 
+  }
+
+  .country-info p {
+    font-size: 0.875rem; 
+  }
+
+  .save-button {
+    font-size: 0.875rem;
+    padding: 0.5rem 0.75rem;
+  }
+
+  .border-countries h3 {
+    font-size: 1rem; 
+  }
+
+  .borders-list {
+    gap: 0.25rem; 
+  }
+
+  .border-item {
+    font-size: 0.75rem; 
+    padding: 0.25rem 0.5rem;
   }
 }

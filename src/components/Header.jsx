@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 function Header() {
     return (
         <header>
+        <div className="header-text">
         <div className="where">
       <Link to="/"><h1>Where In The World?</h1></Link>
         </div>
@@ -14,6 +15,7 @@ function Header() {
         </li>
       </ul>
       </nav>
+      </div>
       </header>
     )
 }

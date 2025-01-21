@@ -46,7 +46,9 @@ function Home() {
                 onSearchChange={setSearchTerm}
                 onSearch={handleSearch} 
             />
+                  <div className="countries-card">
 
+                
                  {filteredCountries.map((country) => {
                 return (
                     <Link
@@ -54,19 +56,22 @@ function Home() {
                         key={country.cca3}
                         style={{ textDecoration: 'none', color: 'inherit' }}
                     >
-                      <div className="countries-grid">
+       
 
                         <Card
+                                
                             flag={country.flags?.png || ''}
                             country={country.name?.common || 'Unknown'}
                             population={country.population}
                             region={country.region}
                             capital={country.capital?.[0] || 'N/A'}
+                            
                         />
-                      </div>
+                  
                     </Link>
                 )
             })}
+            </div>
         </>
     )
 }
