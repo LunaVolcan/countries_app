@@ -6,6 +6,7 @@ import { Link, useNavigate } from 'react-router-dom'
 function Home() {
     const [countries, setCountries] = useState([])
     const [searchTerm, setSearchTerm] = useState('')
+    const [region, setRegion] = useState('')
     const apiUrl = 'https://restcountries.com/v3.1/all'
     const navigate = useNavigate()
 
@@ -19,12 +20,15 @@ function Home() {
     }
 
     useEffect(() => {
-        fetchCountries();
+        fetchCountries()
     }, [])
 
-    const filteredCountries = countries.filter((country) =>
-        country.name?.common.toLowerCase().includes(searchTerm.toLowerCase())
-    )
+    const filteredCountries = countries.filter((country) => {
+        const matchesSearch = country.name?.common.toLowerCase().includes(searchTerm.toLowerCase())
+        const matchesRegion =
+            region === '' || country.region === region || (region === 'Antarctica' && country.region === 'Antarctic')
+        return matchesSearch && matchesRegion
+    })
 
     const handleSearch = () => {
         const matchedCountry = countries.find(
@@ -44,33 +48,25 @@ function Home() {
             <SearchBar
                 searchTerm={searchTerm}
                 onSearchChange={setSearchTerm}
-                onSearch={handleSearch} 
+                onRegionChange={setRegion}
             />
-                  <div className="countries-card">
-
-                
-                 {filteredCountries.map((country) => {
-                return (
+            
+            <div className="countries-card">
+                {filteredCountries.map((country) => (
                     <Link
                         to={`/country/${country.cca3}`}
                         key={country.cca3}
                         style={{ textDecoration: 'none', color: 'inherit' }}
                     >
-       
-
                         <Card
-                                
                             flag={country.flags?.png || ''}
                             country={country.name?.common || 'Unknown'}
                             population={country.population}
                             region={country.region}
                             capital={country.capital?.[0] || 'N/A'}
-                            
                         />
-                  
                     </Link>
-                )
-            })}
+                ))}
             </div>
         </>
     )

@@ -1,6 +1,4 @@
-
-
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 
 function ProfileForm() {
     const [formData, setFormData] = useState({
@@ -11,6 +9,19 @@ function ProfileForm() {
     });
 
     const [error, setError] = useState('')
+    const [formSubmitted, setFormSubmitted] = useState(false)
+
+    useEffect(() => {
+        const savedData = JSON.parse(localStorage.getItem('profileData'))
+        const isFormSubmitted = localStorage.getItem('formSubmitted')
+
+        if (savedData) {
+            setFormData(savedData)
+        }
+        if (isFormSubmitted) {
+            setFormSubmitted(true)
+        }
+    }, [])
 
     const handleChange = (e) => {
         const { name, value } = e.target
@@ -24,19 +35,21 @@ function ProfileForm() {
         e.preventDefault()
 
         if (!formData.fullName || !formData.email || !formData.bio) {
-            setError('Please fill out all required fields.')
+            setError('Please fill out all required fields.');
             return
         }
 
-        setError('')
-        console.log('Form submitted:', formData)
+        // Save form data to localStorage
+        localStorage.setItem('profileData', JSON.stringify(formData))
+        localStorage.setItem('formSubmitted', 'true')
 
-        setFormData({
-            fullName: '',
-            email: '',
-            country: '',
-            bio: '',
-        })
+        setError('');
+        setFormSubmitted(true)
+        console.log('Form submitted:', formData)
+    }
+
+    if (formSubmitted) {
+        return <p>Thank you! Your profile has already been submitted.</p>
     }
 
     return (
