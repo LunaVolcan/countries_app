@@ -6,7 +6,7 @@ function ProfileForm() {
         email: '',
         country: '',
         bio: '',
-    });
+    })
 
     const [error, setError] = useState('')
     const [formSubmitted, setFormSubmitted] = useState(false)
@@ -35,7 +35,7 @@ function ProfileForm() {
         e.preventDefault()
 
         if (!formData.fullName || !formData.email || !formData.bio) {
-            setError('Please fill out all required fields.');
+            setError('Please fill out all required fields.')
             return
         }
 
@@ -43,13 +43,13 @@ function ProfileForm() {
         localStorage.setItem('profileData', JSON.stringify(formData))
         localStorage.setItem('formSubmitted', 'true')
 
-        setError('');
+        setError('')
         setFormSubmitted(true)
         console.log('Form submitted:', formData)
     }
 
     if (formSubmitted) {
-        return <p>Thank you! Your profile has already been submitted.</p>
+        return <h2>Welcome, {formData.fullName}!</h2>
     }
 
     return (
@@ -104,7 +104,9 @@ function ProfileForm() {
             </div>
             {error && <p className="error-message">{error}</p>}
             <div className="form-group">
-                <button type="submit" className="submit-button">Submit</button>
+                <button type="submit" className="submit-button">
+                    Submit
+                </button>
             </div>
         </form>
     )

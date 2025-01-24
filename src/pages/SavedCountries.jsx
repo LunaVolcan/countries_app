@@ -4,14 +4,22 @@ import ProfileForm from '../components/ProfileForm'
 
 function SavedCountries() {
     const [savedCountries, setSavedCountries] = useState([])
-    const [showForm, setShowForm] = useState(true)
+    const [formData, setFormData] = useState(null)
+    const [formSubmitted, setFormSubmitted] = useState(false)
 
     useEffect(() => {
         const saved = JSON.parse(localStorage.getItem('savedCountries')) || []
-        setSavedCountries(saved)
+        setSavedCountries(saved);
 
-        const formSubmitted = localStorage.getItem('formSubmitted')
-        setShowForm(!formSubmitted)
+        const profileData = JSON.parse(localStorage.getItem('profileData'))
+        const isFormSubmitted = localStorage.getItem('formSubmitted')
+
+        if (profileData) {
+            setFormData(profileData)
+        }
+        if (isFormSubmitted) {
+            setFormSubmitted(true)
+        }
     }, [])
 
     const handleRemove = (countryCode) => {
@@ -19,12 +27,18 @@ function SavedCountries() {
             (country) => country.cca3 !== countryCode
         )
 
-        setSavedCountries(updatedCountries)
+        setSavedCountries(updatedCountries);
         localStorage.setItem('savedCountries', JSON.stringify(updatedCountries))
-        // No alert or pop-up here
     }
+
     return (
         <div>
+            {formSubmitted && formData?.fullName ? (
+                <h2 className="welcome-message">Welcome, {formData.fullName}!</h2>
+            ) : (
+                <ProfileForm />
+            )}
+
             {savedCountries.length > 0 ? (
                 <ul className="saved-countries-list">
                     {savedCountries.map((country) => (
@@ -52,13 +66,6 @@ function SavedCountries() {
                 </ul>
             ) : (
                 <p>No countries saved yet!</p>
-            )}
-
-            {showForm && (
-                <div>
-                    <h2>My Profile</h2>
-                    <ProfileForm />
-                </div>
             )}
         </div>
     )

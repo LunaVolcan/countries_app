@@ -11,12 +11,13 @@ function Home() {
     const navigate = useNavigate()
 
     const fetchCountries = async () => {
-        fetch(apiUrl)
-            .then((response) => response.json())
-            .then((data) => {
-                setCountries(data)
-            })
-            .catch((error) => console.log('Error: ' + error.message))
+        try {
+            const response = await fetch(apiUrl)
+            const data = await response.json()
+            setCountries(data)
+        } catch (error) {
+            console.error('Error fetching countries:', error)
+        }
     }
 
     useEffect(() => {
@@ -27,13 +28,12 @@ function Home() {
         const matchesSearch = country.name?.common.toLowerCase().includes(searchTerm.toLowerCase())
         const matchesRegion =
             region === '' || country.region === region || (region === 'Antarctica' && country.region === 'Antarctic')
-        return matchesSearch && matchesRegion
+        return matchesSearch && matchesRegion;
     })
 
     const handleSearch = () => {
         const matchedCountry = countries.find(
-            (country) =>
-                country.name?.common.toLowerCase() === searchTerm.toLowerCase()
+            (country) => country.name?.common.toLowerCase() === searchTerm.toLowerCase()
         )
 
         if (matchedCountry) {
@@ -48,9 +48,9 @@ function Home() {
             <SearchBar
                 searchTerm={searchTerm}
                 onSearchChange={setSearchTerm}
-                onRegionChange={setRegion}
+                onRegionChange={setRegion} 
             />
-            
+
             <div className="countries-card">
                 {filteredCountries.map((country) => (
                     <Link
