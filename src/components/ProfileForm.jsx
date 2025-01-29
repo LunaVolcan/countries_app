@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { getDatabase, ref, set, get } from 'firebase/database'
 
 function ProfileForm() {
     const [formData, setFormData] = useState({
@@ -6,32 +7,39 @@ function ProfileForm() {
         email: '',
         country: '',
         bio: '',
-    })
+    });
 
-    const [error, setError] = useState('')
+    const [error, setError] = useState('');
     const [formSubmitted, setFormSubmitted] = useState(false)
+    const db = getDatabase() // Get database instance
 
     useEffect(() => {
-        const savedData = JSON.parse(localStorage.getItem('profileData'))
-        const isFormSubmitted = localStorage.getItem('formSubmitted')
+        // Fetch user data from Firebase if it exists
+        const fetchProfileData = async () => {
+            const profileRef = ref(db, 'users/profileData')
+            try {
+                const snapshot = await get(profileRef)
+                if (snapshot.exists()) {
+                    setFormData(snapshot.val())
+                    setFormSubmitted(true)
+                }
+            } catch (error) {
+                console.error("Error fetching profile data:", error)
+            }
+        }
 
-        if (savedData) {
-            setFormData(savedData)
-        }
-        if (isFormSubmitted) {
-            setFormSubmitted(true)
-        }
-    }, [])
+        fetchProfileData();
+    }, [db]);
 
     const handleChange = (e) => {
-        const { name, value } = e.target
+        const { name, value } = e.target;
         setFormData((prevData) => ({
             ...prevData,
             [name]: value,
         }))
     }
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault()
 
         if (!formData.fullName || !formData.email || !formData.bio) {
@@ -39,17 +47,19 @@ function ProfileForm() {
             return
         }
 
-        // Save form data to localStorage
-        localStorage.setItem('profileData', JSON.stringify(formData))
-        localStorage.setItem('formSubmitted', 'true')
-
-        setError('')
-        setFormSubmitted(true)
-        console.log('Form submitted:', formData)
+        try {
+            await set(ref(db, 'users/profileData'), formData)
+            setError('')
+            setFormSubmitted(true)
+            console.log('Form submitted:', formData)
+        } catch (error) {
+            console.error("Error saving profile data:", error)
+            setError("Failed to save data. Please try again.")
+        }
     }
 
     if (formSubmitted) {
-        return <h2>Welcome, {formData.fullName}!</h2>
+        return <h2 className="welcome-message">Welcome, {formData.fullName}!</h2>
     }
 
     return (
