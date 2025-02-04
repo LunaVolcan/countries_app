@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import ProfileForm from '../components/ProfileForm'
 import { getDatabase, ref, get, remove } from 'firebase/database'
+import ProfileForm from '../components/ProfileForm'
 
 function SavedCountries() {
     const [savedCountries, setSavedCountries] = useState([])
@@ -11,18 +11,14 @@ function SavedCountries() {
 
     useEffect(() => {
         const fetchSavedCountries = async () => {
-            const savedCountriesRef = ref(db, 'savedCountries')
+            const savedRef = ref(db, 'savedCountries')
             try {
-                const snapshot = await get(savedCountriesRef)
+                const snapshot = await get(savedRef)
                 if (snapshot.exists()) {
-                    const countriesData = snapshot.val();
-                    const filteredCountries = Object.values(countriesData).filter(
-                        country => country.name && country.cca3 && country.flags
-                    );
-                    setSavedCountries(filteredCountries)
+                    setSavedCountries(Object.values(snapshot.val()))
                 }
             } catch (error) {
-                console.error("Error fetching saved countries:", error)
+                console.error('Error fetching saved countries:', error)
             }
         }
 
@@ -44,11 +40,12 @@ function SavedCountries() {
     }, [db])
 
     const handleRemove = async (countryCode) => {
+        const countryRef = ref(db, `savedCountries/${countryCode}`)
         try {
-            await remove(ref(db, `savedCountries/${countryCode}`))
-            setSavedCountries((prev) => prev.filter((country) => country.cca3 !== countryCode))
+            await remove(countryRef)
+            setSavedCountries(savedCountries.filter((country) => country.cca3 !== countryCode))
         } catch (error) {
-            console.error("Error removing country:", error)
+            console.error('Error removing country:', error)
         }
     }
 
@@ -65,10 +62,13 @@ function SavedCountries() {
                     {savedCountries.map((country) => (
                         <li key={country.cca3} className="saved-country-item">
                             <Link to={`/country/${country.cca3}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-                                <img src={country.flags} alt={`${country.name} flag`} className="saved-country-flag" />
-                                <p>{country.name}</p>
+                                <img src={country.flags?.png || ''} alt={`${country.name?.common} flag`} className="saved-country-flag" />
+                                <p>{country.name?.common || 'Unknown'}</p>
                             </Link>
-                            <button className="remove-button" onClick={() => handleRemove(country.cca3)}>Remove</button>
+
+                            <button className="remove-button" onClick={() => handleRemove(country.cca3)}>
+                                Remove
+                            </button>
                         </li>
                     ))}
                 </ul>

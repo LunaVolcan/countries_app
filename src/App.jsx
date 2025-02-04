@@ -9,20 +9,21 @@ import { initializeApp } from "firebase/app";
 import { getDatabase } from "firebase/database"
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDqcu3Pj7a01kJUEWjFQgqGiGxQVKvcGUc",
-  authDomain: "countries-app-d8fa5.firebaseapp.com",
-  projectId: "countries-app-d8fa5",
-  storageBucket: "countries-app-d8fa5.firebasestorage.app",
-  messagingSenderId: "569987568256",
-  appId: "1:569987568256:web:d97e2a9b115bd6a0aecc65",
-  measurementId: "G-M2329NVHGQ"
+  apiKey: import.meta.env.VITE_API_KEY,
+  authDomain: import.meta.env.VITE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_MESSAGE_SENDER_ID,
+  appId: import.meta.env.VITE_APP_ID,
+  measurementId: import.meta.env.VITE_MEASUREMENT_ID,
+  databaseURL: import.meta.env.VITE_DATABASE_URL
 };
 
 const app = initializeApp(firebaseConfig)
 const db = getDatabase(app)
 
 
-
+console.log(firebaseConfig)
 
 
 function App() {

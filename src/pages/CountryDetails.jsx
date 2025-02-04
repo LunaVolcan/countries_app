@@ -1,60 +1,62 @@
 import { useParams, useNavigate } from 'react-router-dom'
 import { useState, useEffect } from 'react'
-import { getDatabase, ref, set, get, increment } from 'firebase/database'
+import { getDatabase, ref, set, get, update } from 'firebase/database'
 
 function CountryDetails() {
     const { countryCode } = useParams()
     const navigate = useNavigate()
-    const db = getDatabase()
     const [country, setCountry] = useState(null)
     const [borderCountries, setBorderCountries] = useState([])
+    const [visitCount, setVisitCount] = useState(0)
     const [saved, setSaved] = useState(false)
-    const [saveCount, setSaveCount] = useState(null)
+    const db = getDatabase()
 
     useEffect(() => {
         const fetchCountry = async () => {
             try {
-                const response = await fetch(`https://restcountries.com/v3.1/alpha/${countryCode}`)
+                const response = await fetch(`https://restcountries.com/v3.1/alpha/${countryCode}`);
                 const data = await response.json()
                 setCountry(data[0])
 
                 if (data[0]?.borders) {
                     const borderResponse = await fetch(`https://restcountries.com/v3.1/alpha?codes=${data[0].borders.join(',')}`)
-                    const borderData = await borderResponse.json()
+                    const borderData = await borderResponse.json();
                     setBorderCountries(borderData)
                 }
-
-                // Get save count from Firebase
-                const countSnapshot = await get(ref(db, `countrySaveCounts/${countryCode}`))
-                if (countSnapshot.exists()) {
-                    setSaveCount(countSnapshot.val())
-                }
+                
+                updateVisitCount()
             } catch (error) {
                 console.error('Error fetching country:', error)
             }
         }
 
-        fetchCountry();
-    }, [countryCode, db])
+        fetchCountry()
+    }, [countryCode])
+
+    const updateVisitCount = async () => {
+        const countRef = ref(db, `visitCounts/${countryCode}`)
+        try {
+            const snapshot = await get(countRef)
+            const currentCount = snapshot.exists() ? snapshot.val() : 0
+            await set(countRef, currentCount + 1)
+            setVisitCount(currentCount + 1)
+        } catch (error) {
+            console.error('Error updating visit count:', error)
+        }
+    }
+
 
     const handleSave = async () => {
-        if (!country) return
-
-        const countryRef = ref(db, `savedCountries/${country.cca3}`)
-        const countRef = ref(db, `countrySaveCounts/${country.cca3}`)
+        const savedRef = ref(db, `savedCountries/${countryCode}`)
 
         try {
-            await set(countryRef, {
-                name: country.name?.common || 'Unknown',
-                cca3: country.cca3,
-                flags: country.flags?.png || country.flags?.svg || ''
-            })
-
-            await set(countRef, (saveCount || 0) + 1)
-            setSaveCount((prev) => (prev || 0) + 1)
+            const snapshot = await get(savedRef)
+            if (!snapshot.exists()) {
+                await set(savedRef, country)
+            }
             setSaved(true)
         } catch (error) {
-            console.error("Error saving country:", error)
+            console.error('Error saving country:', error)
         }
     }
 
@@ -62,7 +64,7 @@ function CountryDetails() {
         navigate(-1)
     }
 
-    if (!country) return <p>Loading country details...</p>
+    if (!country) return <p>Loading country details...</p>;
 
     return (
         <div className="country-container">
@@ -79,7 +81,7 @@ function CountryDetails() {
                             <p><strong>Population:</strong> {country.population.toLocaleString()}</p>
                             <p><strong>Region:</strong> {country.region}</p>
                             <p><strong>Capital:</strong> {country.capital?.[0] || 'N/A'}</p>
-                            {saveCount !== null && <p><strong>Times Saved:</strong> {saveCount}</p>}
+                            <p><strong>Times Searched:</strong> {visitCount}</p>
                         </div>
 
                         {borderCountries.length > 0 && (
@@ -88,7 +90,7 @@ function CountryDetails() {
                                 <div className="borders-list">
                                     {borderCountries.map((borderCountry) => (
                                         <div key={borderCountry.cca3} className="border-item">
-                                            <img src={borderCountry.flags?.png} alt={`${borderCountry.name.common} flag`} width="50" height="30" />
+                                            <img src={borderCountry.flags?.png} alt={`${borderCountry.name.common} flag`} style={{ width: '50px', height: '30px', borderRadius: '5px' }} />
                                             <p>{borderCountry.name.common}</p>
                                         </div>
                                     ))}
@@ -106,4 +108,4 @@ function CountryDetails() {
     )
 }
 
-export default CountryDetails;
+export default CountryDetails
