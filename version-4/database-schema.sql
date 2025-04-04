@@ -3,43 +3,42 @@
 
 -- counting table for all user COUNTRIES (country_id, country_name, search_count integer)
 CREATE TABLE country_counts (
-    country_id VARCHAR PRIMARY KEY,
+    country_id SERIAL PRIMARY KEY,
     country_name VARCHAR,
     search_count INT
 )
-INSERT INTO country_counts (country_id, country_name, search_count);
+INSERT INTO country_counts (country_name, search_count)
 VALUES  
-    ('001', 'Mexico', 3),
-    ( '002', 'United States', 2),
-    ( '004', 'Germany', 1);
+    ('Mexico', 3),
+    ('United States', 2),
+    ('Germany', 1);
 
 -- USERS (user_id PRIMARY KEY, full_name, country, email, bio)
 CREATE TABLE users (
-    user_id VARCHAR PRIMARY KEY, -- or we could use serial
+    user_id SERIAL PRIMARY KEY, -- or we could use serial
     full_name VARCHAR,
     country VARCHAR,
     email VARCHAR,
     bio VARCHAR
 )
 
-INSERT INTO users (user_id, full_name, country, email, bio);
+INSERT INTO users (full_name, country, email, bio)
 VALUES
-    ('0012', 'Bob Barker', 'United States', 'bob@priceisright.com', 'the price is wrong'),
-    ('0013', 'Philliam', 'Antarctica', 'phil@philiam.com', 'the price is right'),
-    ( '0019', 'Carmen Sandiego', 'Guatemala', 'carmen@place.com', 'actually from everywhere');
+    ('Bob Barker', 'United States', 'bob@priceisright.com', 'the price is wrong'),
+    ('Philliam', 'Antarctica', 'phil@philiam.com', 'the price is right'),
+    ('Carmen Sandiego', 'Guatemala', 'carmen@place.com', 'actually from everywhere');
 
 CREATE TABLE saved_countries (
     id SERIAL PRIMARY KEY,
-    user_id VARCHAR(255),
-    country_id VARCHAR(255),
+    user_id INT,
     common_name VARCHAR(255)
 );
 
-INSERT INTO saved_countries (user_id, country_id, common_name)
+INSERT INTO saved_countries (user_id, common_name)
 VALUES 
-    ('0012', '134124', 'Colombia'),
-    ('0012', '004', 'Germany'),
-    ('0012', '001', 'Mexico');
+    ('1', 'Colombia'),
+    ('2', 'Germany'),
+    ('3', 'Mexico');
 
     -- Fetch all countries from the country_counts table.
     SELECT * FROM country_counts;

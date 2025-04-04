@@ -3,15 +3,15 @@
 
 -- counting table for all user COUNTRIES (country_id, country_name, search_count integer)
 CREATE TABLE country_counts (
-    country_id VARCHAR PRIMARY KEY,
+    country_id INT,
     country_name VARCHAR,
-    search_count INT
+    save_count INT
 )
-INSERT INTO country_counts (country_id, country_name, search_count);
+INSERT INTO country_counts (country_id, country_name, save_count)
 VALUES  
-    ('001', 'Mexico', 3),
-    ( '002', 'United States', 2),
-    ( '004', 'Germany', 1);
+    ('1', 'Mexico', 3),
+    ( '2', 'United States', 2),
+    ( '3', 'Germany', 1);
 
 -- USERS (user_id PRIMARY KEY, full_name, country, email, bio)
 CREATE TABLE users (
@@ -31,15 +31,15 @@ VALUES
 CREATE TABLE saved_countries (
     id VARCHAR(255) PRIMARY KEY,
     user_id VARCHAR(255),
-    country_id VARCHAR(255),
+    country_id SERIAL,
     common_name VARCHAR(255)
 );
 
-INSERT INTO saved_countries (id, user_id, country_id, common_name)
+INSERT INTO saved_countries (id, user_id, common_name)
 VALUES 
-    ('1234', '0012', '134124', 'Colombia'),
-    ('1235', '0012', '004', 'Germany'),
-    ('1236', '0012', '001', 'Mexico');
+    ('1234', '0012', 'Colombia'),
+    ('1235', '0012', 'Germany'),
+    ('1236', '0012', 'Mexico');
 
     -- Fetch all countries from the country_counts table.
     SELECT * FROM country_counts;

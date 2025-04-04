@@ -49,22 +49,22 @@ app.get("/get-saved-countries", async (req, res) => {
 
 // save a country
 
-async function saveCountry({ user_id, country_id, common_name }) {
+async function saveCountry({id, user_id, common_name}) {
   await client.query(
-    "INSERT INTO saved_countries (user_id, country_id, common_name) VALUES ($1, $2, $3)",
-    [user_id, country_id, common_name]
+    "INSERT INTO saved_countries (id, user_id, common_name) VALUES ($1, $2, $3)",
+    [id, user_id, common_name]
   );
 }
 
 app.post("/add-saved-country", async (req, res) => {
-  const { user_id, country_id, common_name } = req.body;
-  await saveCountry({ user_id, country_id, common_name});
+  const { id, user_id, common_name } = req.body;
+  await saveCountry({ id, user_id, common_name});
   res.send("Country saved successfully");
 });
 
 // create user profile
 
-async function saveUserProfile({ full_name, country, email, bio}) {
+async function saveUserProfile({full_name, country, email, bio}) {
   await client.query(
     "INSERT INTO users (full_name, country, email, bio) VALUES ($1, $2, $3, $4)",
     [full_name, country, email, bio]
@@ -81,15 +81,32 @@ app.post("/add-user-profile", async (req, res) => {
 
 // click count
 
-async function countryCount({country_id}) {
-  const result = await client.query("SELECT count FROM country_counts WHERE country_id = $1", [country_id]);
- 
+async function countryCount({ save_count }) {
+  const result = await client.query(
+    "SELECT * FROM country_counts WHERE save_count = $1", [save_count]
+  );
+  return result.rows;
 }
 
-app.get("/get-country-count/:country_id", async (req, res) => {
-  const countryCount = await countryCount();
-  res.send(countryCount);
-});
+app.get("/get-save-count", async (req, res) => {
+  const result = await countryCount({ save_count: 3 }); 
+  res.send(result);
+})
+
+
+//  create herloer function 
+// create api endpoitn 
+//  make sure that the information through the country name , maybe
+// get the count 
+// add one to count 
+//send back to front end 
+//displasy
+//what happens when you click on a country and it isnt in the data base yet: a new row is created 
+//change country ID to serial data type
+//google how to increment an integer postgreSQL
+
+//Next step is to get the backend to speak to the front end when someone cliks the save button, it has to increment 
+// to update something in a SQL database you can use th UPDATE clause
 
 // async function saveUserProfile({ fullName, email, country, bio }) {
 //   await client.query('DELETE FROM users') // Optional: keep only the latest profile
