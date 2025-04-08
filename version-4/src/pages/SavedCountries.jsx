@@ -10,48 +10,66 @@ function SavedCountries() {
     const [error, setError] = useState(null)
 
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                // Fetch saved countries
-                const countriesData = await getSavedCountries()
-                setSavedCountries(countriesData)
+        const fetchSavedCountries = async () => {
+          try {
+            const response = await fetch("http://localhost:3000/get-saved-countries");
+            const data = await response.json();
+            setSavedCountries(data);
+          } catch (err) {
+            console.error("Error fetching saved countries:", err);
+          }
+        };
 
-                // Fetch profile data
-                const profileData = await getUserProfile()
-                if (profileData?.fullName) {
-                    setFormData(profileData)
-                    setFormSubmitted(true)
-                }
-            } catch (error) {
-                console.error('Error fetching data:', error)
-                setError('Failed to load data. Please try again later.')
-            }
-        }
+       //connect to backend 
+    //backend will likely save me the whole data table from saved_countrie (SQL)
+    // common name is what REST api and BE both have in common
+    // Fetch 
+    // function to connect BE and API
+    // 
 
-        fetchData()
-    }, [])
 
-    const handleRemove = async (countryCode) => {
-        try {
-            // Note: This endpoint needs to be added to the backend
-            await fetch(`http://localhost:3000/delete-country/${countryCode}`, {
-                method: 'DELETE'
-            })
 
-            // Update local state
-            setSavedCountries(savedCountries.filter((country) => country.country_code !== countryCode))
-        } catch (error) {
-            console.error('Error removing country:', error)
-            setError('Failed to remove country. Please try again later.')
-        }
-    }
+
+    // useEffect(() => {
+    //     const fetchData = async () => {
+    //         try {
+    //             const countriesData = await getSavedCountries()
+    //             setSavedCountries(countriesData)
+
+    //             // Fetch profile data
+    //             const profileData = await getUserProfile()
+    //             if (profileData?.full_name) { 
+    //                 setFormData(profileData)
+    //                 setFormSubmitted(true)
+    //             }
+    //         } catch (error) {
+    //             console.error('Error fetching data:', error)
+    //             setError('Failed to load data. Please try again later.')
+    //         }
+    //     }
+
+    //     fetchData()
+    // }, [])
+
+    // const handleRemove = async (countryCode) => {
+    //     try {
+    //         await fetch(`http://localhost:3000/delete-country/${countryCode}`, {
+    //             method: 'DELETE'
+    //         })
+
+    //         setSavedCountries(savedCountries.filter((country) => country.country_code !== countryCode))
+    //     } catch (error) {
+    //         console.error('Error removing country:', error)
+    //         setError('Failed to remove country. Please try again later.')
+    //     }
+    // }
 
     if (error) return <div className="error-message">{error}</div>
 
     return (
         <div className="saved-countries-container">
-            {formSubmitted && formData?.fullName ? (
-                <h2 className="welcome-message">Welcome, {formData.fullName}!</h2>
+            {formSubmitted && formData?.full_name ? ( 
+                <h2 className="welcome-message">Welcome, {formData.full_name}!</h2> 
             ) : (
                 <ProfileForm />
             )}
@@ -88,4 +106,4 @@ function SavedCountries() {
     )
 }
 
-export default SavedCountries
+export default SavedCountries;

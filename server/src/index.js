@@ -21,7 +21,7 @@ app.listen(port, () => {
 
 // USERS
 async function getUserProfile() {
-  const result = await client.query("SELECT * FROM users LIMIT 1");
+  const result = await client.query("SELECT * FROM users ORDER BY user_id DESC LIMIT 1;");
   console.log(result);
   console.log(result.rows);
   return result.rows[0];
@@ -31,38 +31,6 @@ app.get("/get-user-profile", async (req, res) => {
   const userProfile = await getUserProfile();
   res.send(userProfile);
 });
-
-// saved countries
-
-async function getSavedCountries() {
-  const result = await client.query("SELECT * FROM saved_countries");
-  console.log(result);
-  console.log(result.rows);
-  return result.rows;
-}
-
-app.get("/get-saved-countries", async (req, res) => {
-  const savedCountries = await getSavedCountries();
-  res.send(savedCountries);
-});
-
-
-// save a country
-
-async function saveCountry({id, user_id, common_name}) {
-  await client.query(
-    "INSERT INTO saved_countries (id, user_id, common_name) VALUES ($1, $2, $3)",
-    [id, user_id, common_name]
-  );
-}
-
-app.post("/add-saved-country", async (req, res) => {
-  const { id, user_id, common_name } = req.body;
-  await saveCountry({ id, user_id, common_name});
-  res.send("Country saved successfully");
-});
-
-// create user profile
 
 async function saveUserProfile({full_name, country, email, bio}) {
   await client.query(
@@ -79,33 +47,77 @@ app.post("/add-user-profile", async (req, res) => {
   res.send("User profile saved successfully");
 });
 
+// saved countries
+
+async function getSavedCountries() {
+  const result = await client.query("SELECT * FROM saved_countries");
+  console.log(result);
+  console.log(result.rows);
+  return result.rows;
+}
+
+app.get("/get-saved-countries", async (req, res) => {
+  const savedCountries = await getSavedCountries();
+  res.send(savedCountries);
+});
+
+// save a country
+
+async function saveCountry({ id, user_id, common_name }) {
+  await client.query(
+    "INSERT INTO saved_countries (id, user_id, common_name) VALUES ($1, $2, $3)",
+    [id, user_id, common_name]
+  );
+}
+
+app.post("/add-saved-country", async (req, res) => {
+  const { id, user_id, common_name } = req.body;
+  await saveCountry({ id, user_id, common_name });
+  res.send("Country saved successfully");
+});
+
 // click count
 
 async function countryCount({ save_count }) {
   const result = await client.query(
-    "SELECT * FROM country_counts WHERE save_count = $1", [save_count]
+    "SELECT * FROM country_counts WHERE save_count = $1",
+    [save_count]
   );
   return result.rows;
 }
 
 app.get("/get-save-count", async (req, res) => {
-  const result = await countryCount({ save_count: 3 }); 
+  const result = await countryCount({ save_count: 3 });
   res.send(result);
-})
+});
 
+// update country count
 
-//  create herloer function 
-// create api endpoitn 
+async function updateCountryCount({ country_name }) {
+  await client.query(
+    "UPDATE country_counts SET save_count = save_count + 1 WHERE country_name = $1",
+    [country_name]
+  );
+}
+
+app.post("/add-save-count", async (req, res) => {
+  const { country_name } = req.body; 
+  await updateCountryCount({ country_name }); 
+  res.send("Country count updated successfully");
+});
+
+//  create herloer function
+// create api endpoitn
 //  make sure that the information through the country name , maybe
-// get the count 
-// add one to count 
-//send back to front end 
+// get the count
+// add one to count
+//send back to front end
 //displasy
-//what happens when you click on a country and it isnt in the data base yet: a new row is created 
+//what happens when you click on a country and it isnt in the data base yet: a new row is created
 //change country ID to serial data type
 //google how to increment an integer postgreSQL
 
-//Next step is to get the backend to speak to the front end when someone cliks the save button, it has to increment 
+//Next step is to get the backend to speak to the front end when someone cliks the save button, it has to increment
 // to update something in a SQL database you can use th UPDATE clause
 
 // async function saveUserProfile({ fullName, email, country, bio }) {

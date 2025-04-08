@@ -1,143 +1,117 @@
-import React, { useState, useEffect } from 'react';
-import { getUserProfile, saveUserProfile } from '../services/api';
+import React, { useState, useEffect } from 'react'
 
 function ProfileForm() {
     const [formData, setFormData] = useState({
-        fullName: '',
+        full_name: '',
         email: '',
         country: '',
         bio: '',
-    });
+    })
 
-    const [error, setError] = useState('');
-    const [formSubmitted, setFormSubmitted] = useState(false);
-    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState('')
+    const [formSubmitted, setFormSubmitted] = useState(false)
 
-    // Fetch existing user profile on mount
     useEffect(() => {
-        const fetchProfileData = async () => {
+        const getUser = async () => {
             try {
-                const data = await getUserProfile();
-                if (data?.fullName) {
-                    setFormData(data);
-                    setFormSubmitted(true);
+                const res = await fetch('http://localhost:3000/get-user-profile')
+                const data = await res.json()
+                if (data && data.full_name) {
+                    setFormData(data)
+                    setFormSubmitted(true)
                 }
-            } catch (error) {
-                console.error("Error fetching profile data:", error);
-                setError("Failed to load profile data. Please try again later.");
-            } finally {
-                setIsLoading(false);
+            } catch (err) {
+                console.error("Failed to fetch user profile", err)
             }
-        };
+        }
 
-        fetchProfileData();
-    }, []);
+        getUser()
+    }, [])
 
     const handleChange = (e) => {
-        const { name, value } = e.target;
+        const { name, value } = e.target
         setFormData((prevData) => ({
             ...prevData,
             [name]: value,
-        }));
-        // Clear error when user starts typing
-        if (error) setError('');
-    };
+        }))
+    }
 
     const handleSubmit = async (e) => {
-        e.preventDefault();
-        setIsLoading(true);
+        e.preventDefault()
 
-        if (!formData.fullName || !formData.email || !formData.bio) {
-            setError('Please fill out all required fields.');
-            setIsLoading(false);
-            return;
+        if (!formData.full_name || !formData.email || !formData.bio) {
+            setError('Please fill out all required fields.')
+            return
         }
 
         try {
-            await saveUserProfile(formData);
-            setError('');
-            setFormSubmitted(true);
-        } catch (error) {
-            console.error("Error submitting profile:", error);
-            setError("Failed to submit profile. Please try again.");
-        } finally {
-            setIsLoading(false);
+            const res = await fetch("http://localhost:3000/add-user-profile", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(formData),
+            })
+            const data = await res.json()
+            console.log("Saved:", data)
+            setFormSubmitted(true)
+        } catch (err) {
+            console.error("Error saving profile:", err)
+            setError("There was a problem saving your profile.")
         }
-    };
-
-    if (isLoading) {
-        return <div className="loading">Loading profile...</div>;
     }
 
     if (formSubmitted) {
-        return <h2 className="welcome-message">Welcome, {formData.fullName}!</h2>;
+        return <h2>Welcome, {formData.full_name}!</h2>
     }
 
     return (
         <form className="profile-form" onSubmit={handleSubmit}>
             <h2 className="form-title">My Profile</h2>
-
-            {error && <div className="error-message">{error}</div>}
-
             <div className="form-group">
-                <label htmlFor="full-name">Full Name *</label>
+                <label htmlFor="full-name">Full Name</label>
                 <input
                     type="text"
                     id="full-name"
-                    name="fullName"
-                    placeholder="Full Name"
-                    value={formData.fullName}
+                    name="full_name"
+                    value={formData.full_name}
                     onChange={handleChange}
                     required
                 />
             </div>
-
             <div className="form-group">
-                <label htmlFor="email">Email *</label>
+                <label htmlFor="email">Email</label>
                 <input
                     type="email"
                     id="email"
                     name="email"
-                    placeholder="Email"
                     value={formData.email}
                     onChange={handleChange}
                     required
                 />
             </div>
-
             <div className="form-group">
                 <label htmlFor="country">Country</label>
                 <input
                     type="text"
                     id="country"
                     name="country"
-                    placeholder="Country"
                     value={formData.country}
                     onChange={handleChange}
                 />
             </div>
-
             <div className="form-group">
-                <label htmlFor="bio">Bio *</label>
+                <label htmlFor="bio">Bio</label>
                 <textarea
                     id="bio"
                     name="bio"
-                    placeholder="Tell us about yourself"
                     value={formData.bio}
                     onChange={handleChange}
                     required
-                />
+                ></textarea>
             </div>
-
-            <button 
-                type="submit" 
-                className="submit-button"
-                disabled={isLoading}
-            >
-                {isLoading ? 'Saving...' : 'Save Profile'}
-            </button>
+            {error && <p className="error-message">{error}</p>}
+            <button type="submit" className="submit-button">Submit</button>
         </form>
-    );
+    )
 }
 
-export default ProfileForm;
+export default ProfileForm

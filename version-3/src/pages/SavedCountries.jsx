@@ -1,17 +1,23 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { getDatabase, ref, get, remove } from 'firebase/database'
 import ProfileForm from '../components/ProfileForm'
 
 function SavedCountries() {
     const [savedCountries, setSavedCountries] = useState([])
     const [formData, setFormData] = useState(null)
     const [formSubmitted, setFormSubmitted] = useState(false)
-    const db = getDatabase()
+   
+
+    //connect to backend 
+    //backend will likely save me the whole data table from saved_countrie (SQL)
+    // common name is what REST api and BE both have in common
+    // Fetch 
+    // function to connect BE and API
+    // 
 
     useEffect(() => {
-        const fetchSavedCountries = async () => {
-            const savedRef = ref(db, 'savedCountries')
+        const fetchSavedCountries = async () => { //this function is fro fecthing the saved countries from the API
+            const savedRef = ref(db, 'savedCountries') // to do, replce thie firebase code with fetching countries from my backend
             try {
                 const snapshot = await get(savedRef)
                 if (snapshot.exists()) {
@@ -39,6 +45,7 @@ function SavedCountries() {
         fetchProfileData()
     }, [db])
 
+// this removes the saved country 
     const handleRemove = async (countryCode) => {
         const countryRef = ref(db, `savedCountries/${countryCode}`)
         try {

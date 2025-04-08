@@ -1,13 +1,12 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import { incrementCountryVisit, getCountryVisitCount, saveCountry } from '../services/api';
+import { saveCountry } from '../services/api';
 
 function CountryDetails() {
   const { countryCode } = useParams();
   const navigate = useNavigate();
   const [country, setCountry] = useState(null);
   const [borderCountries, setBorderCountries] = useState([]);
-  const [visitCount, setVisitCount] = useState(0);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState(null);
 
@@ -19,7 +18,6 @@ function CountryDetails() {
         const data = await response.json();
         setCountry(data[0]);
 
-        // Fetch borders
         if (data[0]?.borders?.length) {
           const borderRes = await fetch(
             `https://restcountries.com/v3.1/alpha?codes=${data[0].borders.join(',')}`
@@ -28,11 +26,6 @@ function CountryDetails() {
           const borderData = await borderRes.json();
           setBorderCountries(borderData);
         }
-
-        // Track visits using our API service
-        await incrementCountryVisit(countryCode);
-        const visitData = await getCountryVisitCount(countryCode);
-        setVisitCount(visitData.count || 0);
       } catch (err) {
         console.error('Error loading country:', err);
         setError('Failed to load country details. Please try again later.');
@@ -82,7 +75,7 @@ function CountryDetails() {
               <p><strong>Population:</strong> {country.population.toLocaleString()}</p>
               <p><strong>Region:</strong> {country.region}</p>
               <p><strong>Capital:</strong> {country.capital?.[0] || 'N/A'}</p>
-              <p><strong>Times Searched:</strong> {visitCount}</p>
+
               <button 
                 className={`save-button ${saved ? 'saved' : ''}`}
                 onClick={handleSave}
