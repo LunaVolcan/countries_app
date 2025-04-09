@@ -4,21 +4,73 @@ import ProfileForm from '../components/ProfileForm'
 import { getSavedCountries, getUserProfile } from '../services/api'
 
 function SavedCountries() {
-    const [savedCountries, setSavedCountries] = useState([])
+    const [savedCountries, setSavedCountries] = useState([]) // our saved variable is called savedCountries, it's inital value is an empty array. We call setSavedOuntries to update it's value.
+    const [restCountries, setRestCountries] = useState([]) // state variable 
     const [formData, setFormData] = useState(null)
     const [formSubmitted, setFormSubmitted] = useState(false)
     const [error, setError] = useState(null)
 
+    // 
+    // data coming from the RSET API
+    // Data coming from the BE
+    // Out put:
+        // the data we are going to use to render the saved countries 
+        //  country js object needs to have the country_code in it 
+        // flag_url 
+        // country_name
+
+    function connectCountryInfo() { //combine the data from the backend and REST API
+        // going to use the filter method 
+        // the includes method 
+        const result = restCountries.filter((countryInformation) => {
+            for (let i = 0; i )
+            console.log(countryInformation.name.common);
+            return true;
+        }); // call the method on the array we want to run it on 
+        console.log(result);
+    }
+
+    // filter down all the API countries based whether those countries common names have been saved 
+    // the for loop is needed so we cna go through the saved coutntries and check if any of the saved countries have a name that matches the common name of the REST countries API countries 
+    
+    // I need to filter which countires have been saved soeicifally by their commons names 
+    // The for loop will fcheck if any of the saved countries match the common names of the REST countries API
+
     useEffect(() => {
-        const fetchSavedCountries = async () => {
+        const fetchSavedCountries = async () => { // Created function
           try {
-            const response = await fetch("http://localhost:3000/get-saved-countries");
-            const data = await response.json();
-            setSavedCountries(data);
+            const response = await fetch("http://localhost:3000/get-saved-countries"); // Fetching information from local host (backend)
+            const data = await response.json(); // Data that is being fetched from BE is being formatted into JSON
+            console.log("Saved countries data error", data) // Console logging data 
+            setSavedCountries(data);  // Putting this inforamtion into the empty state variable 
           } catch (err) {
             console.error("Error fetching saved countries:", err);
           }
-        };
+        }  
+        const fetchRestCountries = async () => { // Function
+            try {
+                const response = await fetch (
+                    `https://restcountries.com/v3.1/all ` // Thie fetches the information from the REST API Countries
+                );
+                const data = await response.json(); // Turning the data that is fetched from the REST API into JSON
+                setRestCountries(data); // Putting this information into the state variable 
+                console.log("REST Apit data", data);
+            } catch (err) {
+                console.error("Error fetch REST Countries API", err)
+            }
+        }
+        fetchSavedCountries();
+        fetchRestCountries();
+    }, []);
+
+        useEffect(() => {
+            if (savedCountries.length && restCountries.length) {
+                connectCountryInfo();
+            }
+        },
+        [savedCountries, restCountries]
+    );
+    
 
        //connect to backend 
     //backend will likely save me the whole data table from saved_countrie (SQL)
@@ -89,13 +141,6 @@ function SavedCountries() {
                                 />
                                 <p>{country.country_name}</p>
                             </Link>
-
-                            <button
-                                className="remove-button"
-                                onClick={() => handleRemove(country.country_code)}
-                            >
-                                Remove
-                            </button>
                         </li>
                     ))}
                 </ul>
