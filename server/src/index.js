@@ -78,26 +78,34 @@ app.post("/add-saved-country", async (req, res) => {
 
 // click count
 
-async function countryCount({ save_count }) {
+async function getCountryCount({ country_name }) {
   const result = await client.query(
-    "SELECT * FROM country_counts WHERE save_count = $1",
-    [save_count]
+    "SELECT save_count FROM country_counts WHERE country_name = $1",
+    [country_name]
   );
-  return result.rows;
+  return result.rows[0] || { save_count: 0 };
 }
 
-app.get("/get-save-count", async (req, res) => {
-  const result = await countryCount({ save_count: 3 });
-  res.send(result);
+app.get("/get-save-count/:countryName", async (req, res) => {
+  const { countryName } = req.params;
+  try {
+    const result = await getCountryCount({ country_name: countryName });
+    res.json(result);
+  } catch (error) {
+    console.error("Error fetching save count:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
 });
 
 // update country count
 
 async function updateCountryCount({ country_name }) {
-  await client.query(
-    "UPDATE country_counts SET save_count = save_count + 1 WHERE country_name = $1",
-    [country_name]
-  );
+  await client.query(`
+    INSERT INTO country_counts (country_name, save_count)
+    VALUES ($1, 1)
+    ON CONFLICT (country_name)
+    DO UPDATE SET save_count = country_counts.save_count + 1;
+  `, [country_name]);
 }
 
 app.post("/add-save-count", async (req, res) => {

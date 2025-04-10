@@ -18,17 +18,24 @@ function SavedCountries() {
         //  country js object needs to have the country_code in it 
         // flag_url 
         // country_name
+        // population
 
     function connectCountryInfo() { //combine the data from the backend and REST API
         // going to use the filter method 
         // the includes method 
+        const objArray = [];
         const result = restCountries.filter((countryInformation) => {
-            for (let i = 0; i )
-            console.log(countryInformation.name.common);
-            return true;
+            for (let i = 0; i < savedCountries.length; i++) { // for loop to go through the saved countries
+                console.log(countryInformation.name.common);
+                return true;
+            }
         }); // call the method on the array we want to run it on 
         console.log(result);
     }
+
+    // I have to create an array that that holds  the objects that I want to be filtered out 
+    // I have to synch eveyrthing up through the common name (common denominator between the APIs)
+    // I need to  figure out how to pull the objects form the array 
 
     // filter down all the API countries based whether those countries common names have been saved 
     // the for loop is needed so we cna go through the saved coutntries and check if any of the saved countries have a name that matches the common name of the REST countries API countries 
@@ -64,7 +71,7 @@ function SavedCountries() {
     }, []);
 
         useEffect(() => {
-            if (savedCountries.length && restCountries.length) {
+            if (savedCountries.length > 0 && restCountries.length > 0) { // only runs connectCountryInfo if both savedCountries and restCountries have been loaded
                 connectCountryInfo();
             }
         },
