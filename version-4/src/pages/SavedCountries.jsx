@@ -26,6 +26,7 @@ function SavedCountries() {
         const objArray = [];
         const result = restCountries.filter((countryInformation) => {
             for (let i = 0; i < savedCountries.length; i++) { // for loop to go through the saved countries
+                countryInformation.push("flag", "population")
                 console.log(countryInformation.name.common);
                 return true;
             }
