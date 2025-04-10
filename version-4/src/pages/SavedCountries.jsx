@@ -6,6 +6,7 @@ import { getSavedCountries, getUserProfile } from '../services/api'
 function SavedCountries() {
     const [savedCountries, setSavedCountries] = useState([]) // our saved variable is called savedCountries, it's inital value is an empty array. We call setSavedOuntries to update it's value.
     const [restCountries, setRestCountries] = useState([]) // state variable 
+    const [connectedCountries, setConnectedCountries] = useState([]); // added new dstate variable to hold the connected countries
     const [formData, setFormData] = useState(null)
     const [formSubmitted, setFormSubmitted] = useState(false)
     const [error, setError] = useState(null)
@@ -20,20 +21,16 @@ function SavedCountries() {
         // country_name
         // population
 
-    function connectCountryInfo() { //combine the data from the backend and REST API
-        // going to use the filter method 
-        // the includes method 
-        const objArray = [];
-        const result = restCountries.filter((countryInformation) => {
-            for (let i = 0; i < savedCountries.length; i++) { // for loop to go through the saved countries
-                countryInformation.push("flag", "population")
-                console.log(countryInformation.name.common);
-                return true;
-            }
-        }); // call the method on the array we want to run it on 
-        console.log(result);
-    }
-
+        function connectCountryInfo() {
+            const savedNames = savedCountries.map(c => c.common_name)// mapping over the saved countires and just returnng the commonname 
+            
+            const result = restCountries.filter((countryInfo) => { // looping through all of the countires 
+                return savedNames.includes(countryInfo.name.common); // only returnong something if the country info common name is in the savedNames array
+            });
+        
+            console.log("Filtered result:", result);
+            return result;
+        }
     // I have to create an array that that holds  the objects that I want to be filtered out 
     // I have to synch eveyrthing up through the common name (common denominator between the APIs)
     // I need to  figure out how to pull the objects form the array 
@@ -71,13 +68,12 @@ function SavedCountries() {
         fetchRestCountries();
     }, []);
 
-        useEffect(() => {
-            if (savedCountries.length > 0 && restCountries.length > 0) { // only runs connectCountryInfo if both savedCountries and restCountries have been loaded
-                connectCountryInfo();
-            }
-        },
-        [savedCountries, restCountries]
-    );
+    useEffect(() => {
+        if (savedCountries.length > 0 && restCountries.length > 0) {
+            const result = connectCountryInfo(); // this is returning  the connectd countries that are the same
+            setConnectedCountries(result); // setting connectedCountrires vairiables to equal the result of the connectedCountryInfo function
+        }
+    }, [savedCountries, restCountries]);
     
 
        //connect to backend 
@@ -134,20 +130,22 @@ function SavedCountries() {
                 <ProfileForm />
             )}
 
-            {savedCountries.length > 0 ? (
+            {connectedCountries.length > 0 ? (
                 <ul className="saved-countries-list">
-                    {savedCountries.map((country) => (
-                        <li key={country.country_code} className="saved-country-item">
+                    {connectedCountries.map((country) => (
+                        console.log("Connected countries", country),
+                        <li key={country.car.cca3} className="saved-country-item">
                             <Link
-                                to={`/country/${country.country_code}`}
+                                to={`/country/${country.cca3}`}
                                 style={{ textDecoration: 'none', color: 'inherit' }}
                             >
                                 <img
-                                    src={country.flag_url}
-                                    alt={`${country.country_name} flag`}
+                                    src={country.flags.png}
+                                    alt={`${country.name.common} flag`}
                                     className="saved-country-flag"
                                 />
-                                <p>{country.country_name}</p>
+                                <p>{country.name.common}</p>
+                                <p>Population: {country.population.toLocaleString()}</p>
                             </Link>
                         </li>
                     ))}
