@@ -21,15 +21,42 @@ function SavedCountries() {
         // country_name
         // population
 
+        // function connectCountryInfo() {
+        //     return restCountries
+        //         .filter((countryInfo) =>
+        //             savedCountries.some((saved) => saved.common_name === countryInfo.name.common)
+        //         )
+        //         .map((countryInfo) => {
+        //             const saved = savedCountries.find(
+        //                 (s) => s.common_name === countryInfo.name.common
+        //             );
+        //             return {
+        //                 ...countryInfo,
+        //                 save_count: saved?.save_count || 0,
+        //             };
+        //         });
+        // }
+
         function connectCountryInfo() {
-            const savedNames = savedCountries.map(c => c.common_name)// mapping over the saved countires and just returnng the commonname 
-            
-            const result = restCountries.filter((countryInfo) => { // looping through all of the countires 
-                return savedNames.includes(countryInfo.name.common); // only returnong something if the country info common name is in the savedNames array
-            });
-        
-            console.log("Filtered result:", result);
-            return result;
+            return restCountries
+                .filter((countryInfo) =>
+                    savedCountries.some(
+                        (saved) =>
+                            saved.common_name?.toLowerCase().trim() ===
+                            countryInfo.name.common?.toLowerCase().trim()
+                    )
+                )
+                .map((countryInfo) => {
+                    const saved = savedCountries.find(
+                        (s) =>
+                            s.common_name?.toLowerCase().trim() ===
+                            countryInfo.name.common?.toLowerCase().trim()
+                    );
+                    return {
+                        ...countryInfo,
+                        save_count: saved?.save_count || 0,
+                    };
+                });
         }
     // I have to create an array that that holds  the objects that I want to be filtered out 
     // I have to synch eveyrthing up through the common name (common denominator between the APIs)
@@ -59,7 +86,7 @@ function SavedCountries() {
                 );
                 const data = await response.json(); // Turning the data that is fetched from the REST API into JSON
                 setRestCountries(data); // Putting this information into the state variable 
-                console.log("REST Apit data", data);
+                console.log("REST Api data", data);
             } catch (err) {
                 console.error("Error fetch REST Countries API", err)
             }
@@ -134,13 +161,13 @@ function SavedCountries() {
                 <ul className="saved-countries-list">
                     {connectedCountries.map((country) => (
                         console.log("Connected countries", country),
-                        <li key={country.car.cca3} className="saved-country-item">
+                        <li key={country.cca3} className="saved-country-item">
                             <Link
                                 to={`/country/${country.cca3}`}
                                 style={{ textDecoration: 'none', color: 'inherit' }}
                             >
                                 <img
-                                    src={country.flags.png}
+                                    src={country.flags?.png}
                                     alt={`${country.name.common} flag`}
                                     className="saved-country-flag"
                                 />

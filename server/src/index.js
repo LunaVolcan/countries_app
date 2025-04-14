@@ -63,17 +63,23 @@ app.get("/get-saved-countries", async (req, res) => {
 
 // save a country
 
-async function saveCountry({ id, user_id, common_name }) {
+async function saveCountry({ country_code, common_name, flag_url }) {
   await client.query(
-    "INSERT INTO saved_countries (id, user_id, common_name) VALUES ($1, $2, $3)",
-    [id, user_id, common_name]
+    "INSERT INTO saved_countries (country_code, common_name, flag_url) VALUES ($1, $2, $3)",
+    [country_code, common_name, flag_url]
   );
 }
 
 app.post("/add-saved-country", async (req, res) => {
-  const { id, user_id, common_name } = req.body;
-  await saveCountry({ id, user_id, common_name });
-  res.send("Country saved successfully");
+  const { country_code, common_name, flag_url } = req.body;
+
+  try {
+    await saveCountry({ country_code, common_name, flag_url });
+    res.send("Country saved successfully");
+  } catch (error) {
+    console.error("Error saving country:", error);
+    res.status(500).send("Failed to save country");
+  }
 });
 
 // click count
@@ -113,139 +119,3 @@ app.post("/add-save-count", async (req, res) => {
   await updateCountryCount({ country_name }); 
   res.send("Country count updated successfully");
 });
-
-//  create herloer function
-// create api endpoitn
-//  make sure that the information through the country name , maybe
-// get the count
-// add one to count
-//send back to front end
-//displasy
-//what happens when you click on a country and it isnt in the data base yet: a new row is created
-//change country ID to serial data type
-//google how to increment an integer postgreSQL
-
-//Next step is to get the backend to speak to the front end when someone cliks the save button, it has to increment
-// to update something in a SQL database you can use th UPDATE clause
-
-// async function saveUserProfile({ fullName, email, country, bio }) {
-//   await client.query('DELETE FROM users') // Optional: keep only the latest profile
-//   await client.query(
-//     'INSERT INTO users (full_name, email, country, bio) VALUES ($1, $2, $3, $4)',
-//     [fullName, email, country, bio]
-//   )
-// }
-
-// // SAVED COUNTRIES
-// async function getSavedCountries() {
-//   const result = await client.query('SELECT * FROM saved_countries')
-//   return result.rows
-// }
-
-// async function saveCountry({ country_code, country_name, flag_url }) {
-//   await client.query(
-//     'INSERT INTO saved_countries (country_code, country_name, flag_url) VALUES ($1, $2, $3)',
-//     [country_code, country_name, flag_url]
-//   )
-// }
-
-// // VISIT COUNTS
-// async function incrementCountryVisitCount(country_code) {
-//   const result = await client.query(
-//     'SELECT count FROM country_counts WHERE country_code = $1',
-//     [country_code]
-//   )
-
-//   if (result.rows.length === 0) {
-//     await client.query(
-//       'INSERT INTO country_counts (country_code, count) VALUES ($1, 1)',
-//       [country_code]
-//     )
-//     return 1
-//   } else {
-//     const newCount = result.rows[0].count + 1
-//     await client.query(
-//       'UPDATE country_counts SET count = $1 WHERE country_code = $2',
-//       [newCount, country_code]
-//     )
-//     return newCount
-//   }
-// }
-
-// async function getCountryVisitCount(country_code) {
-//   const result = await client.query(
-//     'SELECT count FROM country_counts WHERE country_code = $1',
-//     [country_code]
-//   )
-//   return result.rows.length ? result.rows[0].count : 0
-// }
-
-// // API endpoints
-
-// // USERS
-// app.get('/get-user-profile', async (req, res) => {
-//   try {
-//     const profile = await getUserProfile()
-//     if (!profile) return res.status(404).json({ message: 'No profile found' })
-//     res.json(profile)
-//   } catch (error) {
-//     console.error('Error fetching profile:', error)
-//     res.status(500).json({ error: 'Internal server error' })
-//   }
-// })
-
-// app.post('/add-user-profile', async (req, res) => {
-//   const { fullName, email, country, bio } = req.body
-//   try {
-//     await saveUserProfile({ fullName, email, country, bio })
-//     res.status(200).json({ message: 'Profile saved successfully' })
-//   } catch (error) {
-//     console.error('Error saving profile:', error)
-//     res.status(500).json({ error: 'Internal server error' })
-//   }
-// })
-
-// // SAVED COUNTRIES
-// app.get('/get-saved-countries', async (req, res) => {
-//   try {
-//     const countries = await getSavedCountries()
-//     res.json(countries)
-//   } catch (error) {
-//     console.error('Error fetching saved countries:', error)
-//     res.status(500).json({ error: 'Internal server error' })
-//   }
-// })
-
-// app.post('/add-saved-country', async (req, res) => {
-//   const { country_code, country_name, flag_url } = req.body
-//   try {
-//     await saveCountry({ country_code, country_name, flag_url })
-//     res.status(200).json({ message: 'Country saved successfully' })
-//   } catch (error) {
-//     console.error('Error saving country:', error)
-//     res.status(500).json({ error: 'Internal server error' })
-//   }
-// })
-
-// // VISIT COUNTS
-// app.get('/get-visit-count/:countryCode', async (req, res) => {
-//   const { countryCode } = req.params
-//   try {
-//     const count = await getCountryVisitCount(countryCode)
-//     res.json({ count })
-//   } catch (error) {
-//     console.error('Error getting visit count:', error)
-//     res.status(500).json({ error: 'Internal server error' })
-//   }
-// })
-
-// app.post('/increment-visit/:countryCode', async (req, res) => {
-//   const { countryCode } = req.params
-//   try {
-//     await incrementCountryVisitCount(countryCode)
-//     res.status(200).json({ message: 'Visit count incremented' })
-//   } catch (error) {
-//     console.error('Error incrementing visit count:', error)
-//     res.status(500).json({ error: 'Internal server error' })
-//   }
-// })

@@ -11,7 +11,7 @@ function Header() {
       <ul>
         <li><p><Link to="/SavedCountries">Saved Countries</Link></p></li>
         <li>
-         <p>Dark Mode</p>
+         {/* <p>Dark Mode</p> */}
         </li>
       </ul>
       </nav>
