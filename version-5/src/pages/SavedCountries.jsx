@@ -71,7 +71,7 @@ function SavedCountries() {
     useEffect(() => {
         const fetchSavedCountries = async () => { // Created function
           try {
-            const response = await fetch("http://localhost:3000/get-saved-countries"); // Fetching information from local host (backend)
+            const response = await fetch("https://countries-app-lfcu.onrender.com/get-saved-countries"); // Fetching information from local host (backend)
             const data = await response.json(); // Data that is being fetched from BE is being formatted into JSON
             console.log("Saved countries data error", data) // Console logging data 
             setSavedCountries(data);  // Putting this inforamtion into the empty state variable 

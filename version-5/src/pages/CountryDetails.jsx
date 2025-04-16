@@ -42,7 +42,7 @@ function CountryDetails() {
 
   const fetchSaveCount = async (commonName) => {
     try {
-      const response = await fetch(`http://localhost:3000/get-save-count/${commonName}`);
+      const response = await fetch(`https://countries-app-lfcu.onrender.com/get-save-count/${commonName}`);
       const data = await response.json();
       setSaveCount(data.save_count || 0);
     } catch (error) {
@@ -52,7 +52,7 @@ function CountryDetails() {
 
   const checkIfAlreadySaved = async (commonName) => {
     try {
-      const response = await fetch('http://localhost:3000/get-saved-countries');
+      const response = await fetch('https://countries-app-lfcu.onrender.com/get-saved-countries');
       const savedData = await response.json();
       const alreadySaved = savedData.some(c => c.common_name === commonName);
       setSaved(alreadySaved);
@@ -72,14 +72,14 @@ function CountryDetails() {
 
     try {
       // save to saved_countries table
-      const saveRes = await fetch('http://localhost:3000/add-saved-country', {
+      const saveRes = await fetch('https://countries-app-lfcu.onrender.com/add-saved-country', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
 
       // increment save count
-      const countRes = await fetch('http://localhost:3000/add-save-count', {
+      const countRes = await fetch('https://countries-app-lfcu.onrender.com/add-save-count', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ country_name: country.name.common }),

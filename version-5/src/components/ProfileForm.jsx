@@ -14,7 +14,7 @@ function ProfileForm() {
     useEffect(() => {
         const getUser = async () => {
             try {
-                const res = await fetch('http://localhost:3000/get-user-profile')
+                const res = await fetch('https://countries-app-lfcu.onrender.com/get-user-profile')
                 const data = await res.json()
                 if (data && data.full_name) {
                     setFormData(data)
@@ -45,7 +45,7 @@ function ProfileForm() {
         }
 
         try {
-            const res = await fetch("http://localhost:3000/add-user-profile", {
+            const res = await fetch("https://countries-app-lfcu.onrender.com/add-user-profile", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(formData),
