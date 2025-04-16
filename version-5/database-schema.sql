@@ -3,8 +3,8 @@
 
 -- counting table for all user COUNTRIES (country_id, country_name, search_count integer)
 CREATE TABLE country_counts (
-    country_id SERIAL PRIMARY KEY,
-    country_name VARCHAR,
+    country_id INT,
+    country_name VARCHAR(100),
     search_count INT
 )
 INSERT INTO country_counts (country_name, search_count)
@@ -15,11 +15,11 @@ VALUES
 
 -- USERS (user_id PRIMARY KEY, full_name, country, email, bio)
 CREATE TABLE users (
-    user_id SERIAL PRIMARY KEY, -- or we could use serial
-    full_name VARCHAR,
-    country VARCHAR,
-    email VARCHAR,
-    bio VARCHAR
+    user_id INT, 
+    full_name VARCHAR(20),
+    country VARCHAR(100),
+    email VARCHAR(100),
+    bio VARCHAR(200)
 )
 
 INSERT INTO users (full_name, country, email, bio)
@@ -29,9 +29,10 @@ VALUES
     ('Carmen Sandiego', 'Guatemala', 'carmen@place.com', 'actually from everywhere');
 
 CREATE TABLE saved_countries (
-    id SERIAL PRIMARY KEY,
-    user_id INT,
-    common_name VARCHAR(255)
+    id INT,
+    country_code TEXT,
+    common_name TEXT,
+    flag_url TEXT
 );
 
 INSERT INTO saved_countries (user_id, common_name)
