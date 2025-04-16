@@ -16,17 +16,17 @@ app.use(express.json());
 // Use DATABASE_URL in production, or fallback to local config.js
 let client;
 
-if (process.env.DATABASE_URL) {
-  client = new Client({
-    connectionString: process.env.DATABASE_URL,
-    ssl: {
-      rejectUnauthorized: false, // Required for Render
-    },
-  });
-} else {
-  const config = await import('./config.js');
-  client = new Client(config.default); 
-}
+// if (process.env.DATABASE_URL) {
+//   client = new Client({
+//     connectionString: process.env.DATABASE_URL,
+//     ssl: {
+//       rejectUnauthorized: false, // Required for Render
+//     },
+//   });
+// } else {
+//   const config = await import('./config.js');
+//   client = new Client(config.default); 
+// }
 
 client.connect();
 
