@@ -30,7 +30,7 @@ let client;
 // client.connect();
 
 app.listen(port, () => {
-  console.log(`Server running on http://localhost:${port}`);
+  console.log(`Server running on https://countries-app-lfcu.onrender.com`);
 });
 
 
