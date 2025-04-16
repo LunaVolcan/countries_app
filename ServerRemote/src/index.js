@@ -28,7 +28,7 @@ let client;
 //   client = new Client(config.default); 
 // }
 
-client.connect();
+// client.connect();
 
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
