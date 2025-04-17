@@ -1,3 +1,4 @@
+import React from 'react'
 import SearchBar from '../components/SearchBar'
 import Card from '../components/CountryCard'
 import { useState, useEffect } from 'react'

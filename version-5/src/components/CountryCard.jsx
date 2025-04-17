@@ -1,4 +1,4 @@
-
+import React from 'react'
 
 function CountryCard({flag, country, population, region, capital}) {
     return (

@@ -1,3 +1,4 @@
+import React from 'react'
 function SearchBar({ searchTerm, onSearchChange, onRegionChange }) {
     const handleClearRegion = () => {
         onRegionChange('')
