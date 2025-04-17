@@ -3,38 +3,29 @@ import cors from "cors";
 import pg from "pg";
 import dotenv from "dotenv";
 
-let config = {
-      user: process.env.USER,
-      host: process.env.HOST,
-      database: process.env.DATABASE,
-      password: process.env.PASSWORD,
-      port: process.env.DATABASE_PORT,
-      ssl: true
-}
-
-// Load .env file in local dev 
-dotenv.config();
+dotenv.config(); // Load .env variables at the top
 
 const { Client } = pg;
+
+// Connect to your PostgreSQL database
+const client = new Client({
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false,
+  },
+});
+
+client.connect(); // ← THIS IS WHAT WAS MISSING
+
 const app = express();
 const port = 3000;
 
 app.use(cors());
 app.use(express.json());
 
-// Use DATABASE_URL in production, or fallback to local config.js
-let client;
-
-
-
-// client.connect();
-
-app.listen(port, () => {
-  console.log(`Server running on https://countries-app-lfcu.onrender.com`);
-});
-
-
+// ==========================
 // USERS
+// ==========================
 async function getUserProfile() {
   const result = await client.query("SELECT * FROM users ORDER BY user_id DESC LIMIT 1;");
   return result.rows[0];
@@ -58,7 +49,9 @@ app.post("/add-user-profile", async (req, res) => {
   res.send("User profile saved successfully");
 });
 
+// ==========================
 // SAVED COUNTRIES
+// ==========================
 async function getSavedCountries() {
   const result = await client.query("SELECT * FROM saved_countries");
   return result.rows;
@@ -88,7 +81,9 @@ app.post("/add-saved-country", async (req, res) => {
   }
 });
 
+// ==========================
 // SAVE COUNT
+// ==========================
 async function getCountryCount({ country_name }) {
   const result = await client.query(
     "SELECT save_count FROM country_counts WHERE country_name = $1",
@@ -121,4 +116,8 @@ app.post("/add-save-count", async (req, res) => {
   const { country_name } = req.body;
   await updateCountryCount({ country_name });
   res.send("Country count updated successfully");
+});
+
+app.listen(port, () => {
+  console.log(`Server running on https://countries-app-lfcu.onrender.com`);
 });
