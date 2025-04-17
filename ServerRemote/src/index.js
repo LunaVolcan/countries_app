@@ -3,37 +3,42 @@ import cors from "cors";
 import pg from "pg";
 import dotenv from "dotenv";
 
-dotenv.config(); // Load .env variables at the top
+dotenv.config(); // Load .env variables locally
 
 const { Client } = pg;
 
-// Connect to your PostgreSQL database
+// PostgreSQL client setup using individual env variables
 const client = new Client({
-  connectionString: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false,
-  },
+  user: process.env.USER,
+  host: process.env.HOST,
+  database: process.env.DATABASE,
+  password: process.env.PASSWORD,
+  port: process.env.DATABASE_PORT,
+  ssl: true // ✅ Required for Render
 });
 
-client.connect(); // ← THIS IS WHAT WAS MISSING
+client.connect();
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
 
-// ==========================
-// USERS
-// ==========================
+// ========== USERS ==========
 async function getUserProfile() {
   const result = await client.query("SELECT * FROM users ORDER BY user_id DESC LIMIT 1;");
   return result.rows[0];
 }
 
 app.get("/get-user-profile", async (req, res) => {
-  const userProfile = await getUserProfile();
-  res.send(userProfile);
+  try {
+    const userProfile = await getUserProfile();
+    res.send(userProfile);
+  } catch (error) {
+    console.error("Error fetching user profile:", error);
+    res.status(500).send("Error fetching user profile");
+  }
 });
 
 async function saveUserProfile({ full_name, country, email, bio }) {
@@ -45,21 +50,29 @@ async function saveUserProfile({ full_name, country, email, bio }) {
 
 app.post("/add-user-profile", async (req, res) => {
   const { full_name, country, email, bio } = req.body;
-  await saveUserProfile({ full_name, country, email, bio });
-  res.send("User profile saved successfully");
+  try {
+    await saveUserProfile({ full_name, country, email, bio });
+    res.send("User profile saved successfully");
+  } catch (error) {
+    console.error("Error saving user profile:", error);
+    res.status(500).send("Failed to save user profile");
+  }
 });
 
-// ==========================
-// SAVED COUNTRIES
-// ==========================
+// ========== SAVED COUNTRIES ==========
 async function getSavedCountries() {
   const result = await client.query("SELECT * FROM saved_countries");
   return result.rows;
 }
 
 app.get("/get-saved-countries", async (req, res) => {
-  const savedCountries = await getSavedCountries();
-  res.send(savedCountries);
+  try {
+    const savedCountries = await getSavedCountries();
+    res.send(savedCountries);
+  } catch (error) {
+    console.error("Error fetching saved countries:", error);
+    res.status(500).send("Error fetching saved countries");
+  }
 });
 
 async function saveCountry({ country_code, common_name, flag_url }) {
@@ -71,7 +84,6 @@ async function saveCountry({ country_code, common_name, flag_url }) {
 
 app.post("/add-saved-country", async (req, res) => {
   const { country_code, common_name, flag_url } = req.body;
-
   try {
     await saveCountry({ country_code, common_name, flag_url });
     res.send("Country saved successfully");
@@ -81,9 +93,7 @@ app.post("/add-saved-country", async (req, res) => {
   }
 });
 
-// ==========================
-// SAVE COUNT
-// ==========================
+// ========== SAVE COUNT ==========
 async function getCountryCount({ country_name }) {
   const result = await client.query(
     "SELECT save_count FROM country_counts WHERE country_name = $1",
@@ -114,10 +124,16 @@ async function updateCountryCount({ country_name }) {
 
 app.post("/add-save-count", async (req, res) => {
   const { country_name } = req.body;
-  await updateCountryCount({ country_name });
-  res.send("Country count updated successfully");
+  try {
+    await updateCountryCount({ country_name });
+    res.send("Country count updated successfully");
+  } catch (error) {
+    console.error("Error updating save count:", error);
+    res.status(500).send("Failed to update save count");
+  }
 });
 
+// Start the server
 app.listen(port, () => {
   console.log(`Server running on https://countries-app-lfcu.onrender.com`);
 });
